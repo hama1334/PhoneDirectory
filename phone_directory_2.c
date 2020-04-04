@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifndef __cplusplus
 typedef char bool;
@@ -54,6 +55,9 @@ entry *dir_next(entry *element)
 
 void dir_push_back(directory *dir, entry *element)
 {
+	directory *temp;
+	entry *temp_entry;
+		
 	if (dir_empty(dir))
 	{
 		dir->first = element;
@@ -61,19 +65,47 @@ void dir_push_back(directory *dir, entry *element)
 	}
 	else
 	{
-		dir->last->next = element;
-		dir->last = element;
+		if (strcmp(element->surname, dir->last->surname) >= 0)
+		{
+			temp_entry = (entry *)malloc(sizeof(entry));
+			temp_entry = dir->last;
+			dir->last->next = element;
+			dir->last = element;
+			dir->last->prev = temp_entry;
+			element->next = NULL;
+		}
+		else if (strcmp(element->surname, dir->last->surname) < 0)
+		{
+			temp = (directory *)malloc(sizeof(directory));
+			temp = dir;
+			temp->last = dir->last->prev;
+			dir_push_back(temp, element);
+		}
 	}
-	element->next = NULL;
+	
 }	
 
-entry *entry_pop_front(directory *dir)
+entry *entry_pop_front(directory *dir, entry *element)
 {
-	entry *element = dir->first;
-	dir->first= dir->first->next;
-	return element;
+	directory *temp;
+	
+	if (strcmp(dir->first->surname, element->surname) == 0)
+		return dir->first;
+	else 
+	{
+		if (dir->first->next != NULL)
+		{
+			temp = (directory *)malloc(sizeof(directory));
+			temp = dir->first->next;
+			return entry_pop_front(temp, element);
+		}
+		else
+			return NULL;
+	}
+	
 }
 
+/*
 typedef struct
 {
 	entry header;
@@ -81,42 +113,44 @@ typedef struct
 	char *surname;
 	char *phonenumber;
 } record;
+*/
 
 int main(void)
 {
 	directory phonebook;
 	
-	record *a = (record *)malloc(sizeof(record));
-    record *b = (record *)malloc(sizeof(record));
-	record *c = (record *)malloc(sizeof(record));
+	entry *a = (entry *)malloc(sizeof(entry));
+    entry *b = (entry *)malloc(sizeof(entry));
+	entry *c = (entry *)malloc(sizeof(entry));
 
 	a->name = "Katerina";
 	a->surname = "Kastriti";
-	a->phonenumber = "6972781433";
+	a->phone = "6972781433";
 
 	b->name = "Dimitris";
 	b->surname = "Tsingos";
-	b->phonenumber = "6944563690";
+	b->phone = "6944563690";
 
 	c->name = "Starttech";
 	c->surname = "Ventures";
-	c->phonenumber = "2118001709";
+	c->phone = "2118001709";
 
 
 	dir_init(&phonebook);
-	dir_push_back(&phonebook, &a->header);
-	dir_push_back(&phonebook, &b->header);
-	dir_push_back(&phonebook, &c->header);
+	dir_push_back(&phonebook, a);
+	dir_push_back(&phonebook, b);
+	dir_push_back(&phonebook, c);
 	
-	for (a = (record *)dir_begin(&phonebook);a ;a=(record *)dir_next(&a->header))
+	for (a = (entry *)dir_begin(&phonebook);a ;a=(entry *)dir_next(a))
 	{
-		printf("Name: %-15s Surname: %-15s Phone number: %-15s\n", a->name, a->surname, a->phonenumber);
+		printf("Name: %-15s Surname: %-15s Phone number: %-15s\n", a->name, a->surname, a->phone);
 	}
-	while (!dir_empty(&phonebook))
+/*	while (!dir_empty(&phonebook))
 	{
-		a = (record *) entry_pop_front(&phonebook);
+		a = (entry *) entry_pop_front(&phonebook);
 		free(a);
 	}
+*/
 	return 0;
 	
 }
