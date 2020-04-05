@@ -108,40 +108,80 @@ entry *PhoneDirectoryFind(directory *dir, entry *element)
 int main(void)
 {
 	directory *phonebook = (directory *)malloc(sizeof(directory));
+	entry *record = (entry *)malloc(sizeof(entry));
+
+	printf("Welcome to The PhoneDirectory Application\n");
+	printf("(c) Dimitris Tsingos 2020, email: tsingos@vtrip.net\n\n");
 	
-	entry *a = (entry *)malloc(sizeof(entry));
-    	entry *b = (entry *)malloc(sizeof(entry));
-	entry *c = (entry *)malloc(sizeof(entry));
-
-	a->name = "Katerina";
-	a->surname = "Kastriti";
-	a->phone = "6972781433";
-
-	b->name = "Dimitris";
-	b->surname = "Tsingos";
-	b->phone = "6944563690";
-
-	c->name = "Starttech";
-	c->surname = "Ventures";
-	c->phone = "2118001709";
-
-
 	dir_init(phonebook);
-	PhoneDirectoryInsert(phonebook, a);
-	PhoneDirectoryInsert(phonebook, b);
-	PhoneDirectoryInsert(phonebook, c);
+
+	printf("The choices available are the following:\n");
+	printf("A - Add a record\n");
+	printf("B - Search for a record\n\n");
+	printf("E - Exit the PhoneDirectory Application\n\n");
+	printf("Please give your choice: ");
 	
-	for (a = (entry *)dir_begin(phonebook);a ;a=(entry *)dir_next(a))
+	int c;
+
+	while ((c=getchar()) != EOF)
 	{
-		printf("Name: %-15s Surname: %-15s Phone number: %-15s\n", a->name, a->surname, a->phone);
+		if (c== 'E' || c == 'e')
+			break;
+		else if (c == 'A' || c == 'a')
+		{
+			record->name = (char *)malloc(20*sizeof(char));
+			printf("Name: ");
+			scanf("%s", record->name);
+
+			record->surname = (char *)malloc(20*sizeof(char));
+			printf("Surname: ");
+			scanf("%s", record->surname);
+			
+			record->phone = (char *)malloc(20*sizeof(char));
+			printf("Phone number (international format): ");
+			scanf("%s", record->phone);
+			
+			PhoneDirectoryInsert(phonebook, record);
+			
+			printf("\nThe entry has been registered. Thank you for using the PhoneDirectory application!\n");
+			printf("\n\nThe choices available are the following:\n");
+			printf("A - Add a record, B - Search for a record, and, E - Exit the PhoneDirectory Application\n");
+			printf("Please give your choice: ");
+			
+			continue;
+		}
+		else if (c == 'B' || c == 'b')
+		{
+			entry *tempo;
+			tempo = (entry *)malloc(sizeof(entry));
+			printf("Please give the surname of the person you wish to find: ");
+			scanf("%s", record->surname);
+			tempo = PhoneDirectoryFind(phonebook, record);
+			printf("The person you are looking for is the following:\nName: %s\nSurname: %s\nPhone number: %s\n\nThank you for using the PhoneDirectory Application\n",tempo->name, tempo->surname, tempo->phone);
+			free(tempo);
+			printf("\n\nThe choices available are the following:\n");
+			printf("A - Add a record, B - Search for a record, and, E - Exit the PhoneDirectory Application\n");
+			printf("Please give your choice: ");
+			continue;
+
+		}
+		else if (c == '\n' || c == ' ' || c == '\t')
+			continue;
+		else
+		{
+			printf("\nYou have not made a valid choice. Kindly select A or B or E\n");
+			continue;
+		}
 	}
 
 	while (!dir_empty(phonebook))
 	{
-		a = phonebook->first;
+		record = phonebook->first;
 		phonebook->first = phonebook->first->next;
-		free(a);
+		free(record);
 	}
+	
+	free(phonebook);
 
 	return 0;
 }	
