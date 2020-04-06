@@ -9,36 +9,37 @@ typedef char bool;
 #endif
 
 
-struct dir_entry
+struct PhoneDirectoryEntry
 {
 	char *name;
 	char *surname;
 	char *phone;
-	struct dir_entry *next;
-	struct dir_entry *prev;
+	struct PhoneDirectoryEntry *next;
+	struct PhoneDirectoryEntry *prev;
 };
 
-typedef struct dir_entry entry;
+typedef struct PhoneDirectoryEntry entry;
 
-typedef struct directory
+typedef struct PhoneDirectory
 {
 	entry *first;
 	entry *last;
 } directory;
 
-void dir_init(directory *dir)
+void PhoneDirectoryInitialize(directory *dir)
 {
 	dir->first = NULL; 
 	dir->last = NULL;
-		
+	
+	return;
 }
 
-bool dir_empty(directory *dir)
+bool PhoneDirectoryIsEmpty(directory *dir)
 {
 	return (NULL == dir->first)? TRUE : FALSE;
 }
 
-entry *dir_begin(directory *dir)
+entry *PhoneDirectoryBegin(directory *dir)
 {
 	return dir->first;
 }
@@ -53,12 +54,14 @@ entry *dir_next(entry *element)
 	return element->next;
 }
 
+
+
 void PhoneDirectoryInsert(directory *dir, entry *element)
 {
 	directory *temp;
 	entry *temp_entry;
 		
-	if (dir_empty(dir))
+	if (PhoneDirectoryIsEmpty(dir))
 	{
 		dir->first = element;
 		dir->last = element;
@@ -105,6 +108,30 @@ entry *PhoneDirectoryFind(directory *dir, entry *element)
 	
 }
 
+void PhoneDirectoryPrint(directory *dir)
+{
+	entry *record;
+	int i = 0;
+	record = (entry *)malloc(sizeof(entry));
+	
+	record = PhoneDirectoryBegin(dir);
+	
+	if (record == NULL)
+	{
+		printf("The PhoneDirectory is empty\n");
+		return;
+	}
+	
+	while (record)
+	{
+		printf("No: %d, Name: %s, Surname: %s, Phone: %s\n", i, record->name, record->surname, record->phone);
+		++i;
+		record = record->next;
+	}
+	
+	return;
+}
+
 int main(void)
 {
 	directory *phonebook = (directory *)malloc(sizeof(directory));
@@ -113,11 +140,12 @@ int main(void)
 	printf("Welcome to The PhoneDirectory Application\n");
 	printf("(c) Dimitris Tsingos 2020, email: tsingos@vtrip.net\n\n");
 	
-	dir_init(phonebook);
+	PhoneDirectoryInitialize(phonebook);
 
 	printf("The choices available are the following:\n");
 	printf("A - Add a record\n");
 	printf("B - Search for a record\n\n");
+	printf("P - Print the PhoneDirectory\n\n");
 	printf("E - Exit the PhoneDirectory Application\n\n");
 	printf("Please give your choice: ");
 	
@@ -145,7 +173,7 @@ int main(void)
 			
 			printf("\nThe entry has been registered. Thank you for using the PhoneDirectory application!\n");
 			printf("\n\nThe choices available are the following:\n");
-			printf("A - Add a record, B - Search for a record, and, E - Exit the PhoneDirectory Application\n");
+			printf("A - Add a record, B - Search for a record, P - Print the PhoneDirectory, and, E - Exit the PhoneDirectory Application\n");
 			printf("Please give your choice: ");
 			
 			continue;
@@ -160,10 +188,18 @@ int main(void)
 			printf("The person you are looking for is the following:\nName: %s\nSurname: %s\nPhone number: %s\n\nThank you for using the PhoneDirectory Application\n",tempo->name, tempo->surname, tempo->phone);
 			free(tempo);
 			printf("\n\nThe choices available are the following:\n");
-			printf("A - Add a record, B - Search for a record, and, E - Exit the PhoneDirectory Application\n");
+			printf("A - Add a record, B - Search for a record, P - Print the PhoneDirectory, and, E - Exit the PhoneDirectory Application\n");
 			printf("Please give your choice: ");
 			continue;
 
+		}
+		else if (c == 'P' || c == 'p')
+		{
+			PhoneDirectoryPrint(phonebook);
+			printf("\n\nThe choices available are the following:\n");
+			printf("A - Add a record, B - Search for a record, P - Print the PhoneDirectory, and, E - Exit the PhoneDirectory Application\n");
+			printf("Please give your choice: ");
+			continue;
 		}
 		else if (c == '\n' || c == ' ' || c == '\t')
 			continue;
@@ -174,7 +210,7 @@ int main(void)
 		}
 	}
 
-	while (!dir_empty(phonebook))
+	while (!PhoneDirectoryIsEmpty(phonebook))
 	{
 		record = phonebook->first;
 		phonebook->first = phonebook->first->next;
