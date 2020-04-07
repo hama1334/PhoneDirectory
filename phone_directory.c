@@ -91,6 +91,7 @@ void PhoneDirectoryInsert(directory *dir, entry *element)
 entry *PhoneDirectoryFind(directory *dir, entry *element)
 {
 	directory *temp;
+	temp = (directory *)malloc(sizeof(directory));
 	
 	if (strcmp(dir->first->surname, element->surname) == 0)
 		return dir->first;
@@ -98,7 +99,6 @@ entry *PhoneDirectoryFind(directory *dir, entry *element)
 	{
 		if (dir->first->next != NULL)
 		{
-			temp = (directory *)malloc(sizeof(directory));
 			temp = dir->first->next;
 			return PhoneDirectoryFind(temp, element);
 		}
@@ -122,9 +122,9 @@ void PhoneDirectoryPrint(directory *dir)
 		return;
 	}
 	
-	while (record)
+	while (record!=NULL)
 	{
-		printf("No: %d, Name: %s, Surname: %s, Phone: %s\n", i, record->name, record->surname, record->phone);
+		printf("No: %d, Name: %s, Surname: %s, Phone: %s\n", i+1, record->name, record->surname, record->phone);
 		++i;
 		record = record->next;
 	}
@@ -185,7 +185,7 @@ int main(void)
 			printf("Please give the surname of the person you wish to find: ");
 			scanf("%s", record->surname);
 			tempo = PhoneDirectoryFind(phonebook, record);
-			printf("The person you are looking for is the following:\nName: %s\nSurname: %s\nPhone number: %s\n\nThank you for using the PhoneDirectory Application\n",tempo->name, tempo->surname, tempo->phone);
+			printf("\nThe person you are looking for is the following:\nName: %s\tSurname: %s\tPhone number: %s\n\nThank you for using the PhoneDirectory Application\n",tempo->name, tempo->surname, tempo->phone);
 			free(tempo);
 			printf("\n\nThe choices available are the following:\n");
 			printf("A - Add a record, B - Search for a record, P - Print the PhoneDirectory, and, E - Exit the PhoneDirectory Application\n");
@@ -220,4 +220,5 @@ int main(void)
 	free(phonebook);
 
 	return 0;
+	//this is a draft comment
 }	
