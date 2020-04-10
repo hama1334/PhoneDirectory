@@ -168,7 +168,6 @@ int main(void)
 	}
 
 	free(PhoneBook);
-	free(tempo);
 	free(nam);
 	free(surnam);
 	free(phon);
