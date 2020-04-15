@@ -113,6 +113,16 @@ directory *DirectoryInsert(directory *dir, entry *element)
 	
 		for(p=DirectoryBegin(dir); p != NULL && (EntryCmp(p, element) < 0); pprev = p, p=NextElement(p))
 			;
+		if (p == DirectoryBegin(dir))
+		{
+			dir->first=element;
+			element->next = p;
+			p->prev=element;
+			if (dir->count == 1)
+				dir->last = p;
+			++(dir->count);
+			return dir;
+		}
 		pprev->next = element;
 		element->prev = pprev;
 		if (p == NULL)
@@ -265,7 +275,7 @@ void InitialMessageToUser()
 	fprintf(stdout, "A - Add a record\n");
 	fprintf(stdout, "S - Search for a record\n");
 	fprintf(stdout, "D - Delete a record\n");
-	fprintf(stdout, "V - Print the number of the PhoneDirectory records\n\n");
+	fprintf(stdout, "V - Print the number of the PhoneDirectory records\n");
 	fprintf(stdout, "P - Print the PhoneDirectory\n\n");
 	fprintf(stdout, "E - Exit the PhoneDirectory Application\n\n");
 	fprintf(stdout, "Please give your choice: ");
@@ -285,23 +295,6 @@ void FreePhoneDirecory(directory *dir)
 	free(dir);
 }
 
-	
-/*
-void SwapEntry(directory *dir, entry *a, entry *b)
-{	
-	if (DirectoryIsEmpty(dir))
-	{
-		fprintf(stderr,"***error*** The Directory is empty\n");
-		return;
-	}
-	else
-	{
-		entry *temp;
-		a = temp;
-		
-
-}
-*/
 
 int main(void)
 {
@@ -310,6 +303,7 @@ int main(void)
 	char *s;
 	int len = MAXLEN;
 	int c;
+	static bool PhoneBookIsON = FALSE;
 
 	InitialMessageToUser();
 
@@ -326,6 +320,7 @@ int main(void)
 			{
 				record=GetNewEntry(len);
 				PhoneBook = DirectoryInitialize(PhoneBook, record);
+				PhoneBookIsON = TRUE;
 			}
 			else
 			{
@@ -357,8 +352,13 @@ int main(void)
 		}
 		else if (c == 'V' || c == 'v')
 		{
-			fprintf(stdout, "\nThe PhoneDirectory includes %d record(s)\n", PhoneBook->count);
-			fprintf(stdout, "\nThe first record is %s and the last is %s\n", PhoneBook->first->surname, PhoneBook->last->surname);
+			if (PhoneBookIsON == FALSE || PhoneBook->count == 0)
+				fprintf(stdout, "\nThere are not any records in the PhoneDirectory\n");
+			else
+			{
+				fprintf(stdout, "\nThe PhoneDirectory includes %d record(s)\n", PhoneBook->count);
+				fprintf(stdout, "The first record is %s and the last is %s\n", PhoneBook->first->surname, PhoneBook->last->surname);
+			}
 			RequestNewDataEntry();
 			continue;
 		}
