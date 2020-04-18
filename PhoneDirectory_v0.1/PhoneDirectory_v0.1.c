@@ -213,7 +213,7 @@ void DirectoryPrint(directory *dir)
 
 	p = DirectoryBegin(dir);
 	do
-		fprintf(stdout, "No:%3d,Name:%10s Surname: %15s Phone:%13s\n", i++, p->name, p->surname, p->phone);
+		fprintf(stdout, "No:%3d Name:%-20s Surname: %-20s Phone:%-20s\n", i++, p->name, p->surname, p->phone);
 	while ((p=NextElement(p))!= NULL);
 //	while ((p=NextElement(p))!= NULL && --(dir->count));
 	return;
@@ -229,24 +229,47 @@ void RequestNewDataEntry(void)
 
 }
 
+int IgnoreEmptySpaces(FILE *f)
+{
+	int c;
+	
+	c=fgetc(f);
+	while (c == '\n' || c == '\t' || c == ' ')
+		c=fgetc(f);
+	return c;
+}
+
+void fgetname(FILE *f, char *s)
+{
+	int c;
+	int i = 1;
+
+	c = IgnoreEmptySpaces(stdin);
+	s[0] = c;
+	while ((c=fgetc(f)) != '\n')
+		s[i++]=c;
+	s[i]= '\0';
+	
+	return;
+}
+
 entry *GetNewEntry(int l)
 {
 	entry *temp;
 	char *n, *s, *p;
 
-//	temp = (entry *)malloc(sizeof(entry);
 	n = (char *)malloc(l*sizeof(char));
 	fprintf(stdout,"Name: ");
-	fscanf(stdin, "%s", n);
+	fgetname(stdin, n);
 
 	s = (char *)malloc(l*sizeof(char));
 	fprintf(stdout,"Surname: ");
-	fscanf(stdin, "%s", s);
+	fgetname(stdin, s);
 
 	p = (char *)malloc(l*sizeof(char));
 	fprintf(stdout,"Phone number (international format): ");
-	fscanf(stdin,"%s", p);
-
+	fgetname(stdin, p);
+	
 	temp = EntryInitialize(n, s, p, l);
 
 	return temp;
@@ -261,7 +284,7 @@ void PrintEntry(entry *record)
 	}
 	else
 	{
-		fprintf(stdout,"\nThe person you are looking for is the following:\nName: %15s\tSurname: %15s\tPhone number: %13s\n\nThank you for using the PhoneDirectory Application\n",record->name, record->surname, record->phone);
+		fprintf(stdout,"\nThe person you are looking for is the following:\nName: %23s\tSurname: %20s\tPhone number: %13s\n\n",record->name, record->surname, record->phone);
 		return;
 	}
 }
