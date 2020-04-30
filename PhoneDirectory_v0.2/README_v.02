@@ -1,6 +1,7 @@
-The version 0.2 of the PhoneDirectory Application is able to manage a phone
+The version 0.2 of the PhoneDirectory Application is able to manage a simple phone
 directory using a doubly linked list and to save the contents of the
 PhoneDirectory into a file ("datafile"), as well as of course to read the data
 saved from that file. 
-The next version is planned to have for fields for each record (such as office
-and home phone, as well as email) as well as more sophisticated search.
+The next version is planned to have more fields for each record (such as office
+and home phone, as well as email) as well as more sophisticated search (in this 
+version the user can search based on surname only, and an exact match is required).

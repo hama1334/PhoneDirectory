@@ -537,7 +537,10 @@ int main(void)
 			return 0;
 		}
 		else if (c == '\n' || c == ' ' || c == '\t')
+		{	
+			RequestNewDataEntry();
 			continue;
+		}
 		else
 		{
 		    fprintf(stdout, "You have made a wrong choice");
