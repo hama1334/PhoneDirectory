@@ -73,6 +73,14 @@ entry *DirectoryEnd(directory *dir)
 	return dir->last;
 }
 
+int DirectorySize(directory *dir)
+{
+	if (!DirectoryIsEmpty(dir))
+		return dir->count;
+	else
+		return 0;
+}
+
 entry *NextElement(entry *element)
 {
 	return element->next;
